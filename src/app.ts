@@ -1,19 +1,25 @@
 import 'reflect-metadata';
 import express from 'express';
+import Container from 'typedi';
 import http from 'http';
 import config from './config';
 import Logger from './loaders/logger';
 import loader from './loaders';
 const app = express();
 
+// /**
+//  * Use TypeDI as TypeORM dependency injector
+//  */
+// useContainer(Container);
+
 const startServer = async () => {
   //load initial dependencies
   await loader(app);
+
   /**
    * Get port from environment and store in Express.
    */
   const port = config.port;
-  app.set('port', port);
   const server = http.createServer(app);
 
   /**

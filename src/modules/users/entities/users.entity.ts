@@ -1,5 +1,4 @@
 import {Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, OneToOne} from 'typeorm';
-import { profile } from 'winston';
 import { accountStatus } from '../enum';
 import { UsersProfile } from './users_profile.entity';
 
@@ -14,13 +13,13 @@ export class Users {
     @Column({nullable: false})
     password: string;
 
-    @Column({name: 'is_activated'})
+    @Column({name: 'is_activated', nullable: true})
     isActivated: boolean
 
     @Column({name:'account_status', type: 'enum', enum:accountStatus, default:accountStatus.pd})
     accountStatus: string
 
-    @Column({name:'last_logged_in'})
+    @Column({name:'last_logged_in', nullable: true})
     lastLoggedIn: Date
 
     @CreateDateColumn({name:'created_at'})
