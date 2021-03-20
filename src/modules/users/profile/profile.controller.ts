@@ -1,17 +1,17 @@
-import { Body, Controller, Get, Post } from 'routing-controllers';
+import { Body, Controller, Get, Patch, Post } from 'routing-controllers';
 import { Service } from 'typedi';
 import { UserRegisterDTO } from '../dto/auth.dto';
-import AuthService from './auth.service';
+import ProfileService from './profile.service';
 
-@Controller('auth/')
+@Controller('user/')
 @Service()
 export default class AuthController {
-  constructor(private authService: AuthService) {}
+  constructor(private profileService: ProfileService) {}
   
   /**
    * Controller method to handle login authentication
    */
-  @Post('login')
+  @Get('profile')
   async login() {
     return {message:'this is login'}
   }
@@ -19,8 +19,8 @@ export default class AuthController {
   /**
    * Controller method for user registration
    */
-  @Post('register')
+  @Patch('profile')
   async register(@Body() body : UserRegisterDTO){
-      return this.authService.registerUser(body);
+      
   }
 }

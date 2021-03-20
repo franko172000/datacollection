@@ -13,7 +13,7 @@ export class Users {
     @Column({nullable: false})
     password: string;
 
-    @Column({name: 'is_activated', nullable: true})
+    @Column({name: 'is_activated', nullable: false, default: 0})
     isActivated: boolean
 
     @Column({name:'account_status', type: 'enum', enum:accountStatus, default:accountStatus.pd})

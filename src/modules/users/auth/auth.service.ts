@@ -1,32 +1,37 @@
-import { Request, Response } from 'express';
+import { NotFoundError } from 'routing-controllers';
 import { Service } from 'typedi';
-import { Connection, getConnection, Repository } from 'typeorm';
-import { InjectRepository } from 'typeorm-typedi-extensions';
 import { BaseService } from '../../../services/base.service';
-import { Users } from '../entities/users.entity';
+import { UserRegisterDTO } from '../dto/auth.dto';
 import { UsersRepository } from '../repositories/users.repository';
+import ProfileUtilService  from '../profile/profile_util.service';
+import * as bcrypt from 'bcrypt';
 
 @Service()
 export default class AuthService extends BaseService {
-  //@InjectRepository(Users) private readonly userRepo: Repository<Users>
-  private readonly repository: any;
-  constructor(private readonly userRepo:UsersRepository){
-      super();
+
+  constructor(private readonly userRepo:UsersRepository, private readonly profileUtil: ProfileUtilService){
+    super();
   }
 
-  async login(req: Request, res: Response) {
-    return this.clientError(res);
-  }
+  async login() {}
 
-  async addUser() {
-    // const data = await this.userRepo.createUser({
-    //   email: "franko172000@gmail.com",
-    //   password: "Test"
-    // })
-    this.userRepo.createUser({
-      email: "franko172000@gmail.com",
-      password: "Test"
+  async registerUser(user: UserRegisterDTO) {
+    //destruct user object
+    let {firstName,lastName,email,password} = user;
+    //encrypt password
+    password = bcrypt.hashSync(password, 10);
+    //create user record
+    const userObj = await this.userRepo.createUser({email,password})
+    
+    //create profile
+    this.profileUtil.createProfile({
+      user_id: userObj.id,
+      firstName,
+      lastName
     })
-    return {message:"User created"}
+
+    //TODO: 6. Trigger an event to Send confirmation mail
+    //TODO: 7. Return response to user
+    return this.okResponse("This is a test response")
   }
 }

@@ -4,7 +4,7 @@ import { Users } from './users.entity';
 @Entity({name:'users_profile'})
 export class UsersProfile {
     @PrimaryColumn()
-    user_id: number;
+    user_id: string;
 
     @Column({name: 'first_name', nullable: false})
     firstName: string;
@@ -19,7 +19,7 @@ export class UsersProfile {
     companyName: string
 
     @Column({nullable: true})
-    industry: Date
+    industry: string
 
     @CreateDateColumn({name:'created_at'})
     createdAt: Date
