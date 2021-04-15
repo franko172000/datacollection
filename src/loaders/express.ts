@@ -3,10 +3,13 @@ import helmet from 'helmet';
 import bodyParser from 'body-parser';
 import config from '../config';
 import { useContainer, useExpressServer } from 'routing-controllers';
+import MessageBrooker from '../brooker';
 import Container from 'typedi';
 import cors from 'cors';
 
 export default (app: express.Application): void => {
+  //register message brooker receiver
+  MessageBrooker();
   //set helmet
   app.use(helmet());
   //set express json
@@ -15,22 +18,21 @@ export default (app: express.Application): void => {
   app.use(bodyParser.json());
   //use cors
   app.use(cors());
-  
 
   //Let routing controller use TypeDI as dependency injector
   useContainer(Container);
   /**
    * Intialise routing controller
    */
-  useExpressServer(app,{
+  useExpressServer(app, {
     //set up base path
-    routePrefix:config.api.prefix,
+    routePrefix: config.api.prefix,
     defaultErrorHandler: false, // disable default error handler
     //register all controllers
-    controllers:[process.cwd() + '/src/**/*.controller.ts'],
-    middlewares:[process.cwd() + '/src/**/*.middleware.ts'],
-    interceptors:[process.cwd() + '/src/**/*.interceptor.ts']
-  })
+    controllers: [process.cwd() + '/src/**/*.controller.ts'],
+    middlewares: [process.cwd() + '/src/**/*.middleware.ts'],
+    interceptors: [process.cwd() + '/src/**/*.interceptor.ts'],
+  });
 
   //load routes
   //app.use(config.api.prefix, routes());

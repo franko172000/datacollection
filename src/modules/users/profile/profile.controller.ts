@@ -7,20 +7,18 @@ import ProfileService from './profile.service';
 @Service()
 export default class AuthController {
   constructor(private profileService: ProfileService) {}
-  
+
   /**
    * Controller method to handle login authentication
    */
   @Get('profile')
   async login() {
-    return {message:'this is login'}
+    return { message: 'this is login' };
   }
 
   /**
    * Controller method for user registration
    */
   @Patch('profile')
-  async register(@Body() body : UserRegisterDTO){
-      
-  }
+  async register(@Body() body: UserRegisterDTO) {}
 }

@@ -4,8 +4,7 @@ import { ProfileRepository } from '../repositories/profile.repository';
 
 @Service()
 export default class ProfileService extends BaseService {
-
-  constructor(private readonly profileRepo:ProfileRepository){
+  constructor(private readonly profileRepo: ProfileRepository) {
     super();
   }
 }
