@@ -27,7 +27,6 @@ export default class MessageBrooker {
       const brooker = new MessageBrooker();
       this.instance = brooker.init();
     }
-
     return this.instance;
   }
 

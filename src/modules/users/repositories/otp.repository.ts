@@ -1,10 +1,14 @@
+import { Service } from 'typedi';
 import { BaseRepository } from '../../../repository/base.repository';
-import { OTP } from '../entity/otp.entity';
+import { OTP } from '../entities/otp.entity';
+import { Iotp } from '../interfaces';
 
+@Service()
 export class OTPRepository extends BaseRepository {
   constructor() {
     super(OTP);
   }
+
   /**
    * Create OTP
    * @param Iotp data OTP interface
@@ -22,5 +26,13 @@ export class OTPRepository extends BaseRepository {
    */
   async getOTP(code: number, userId: string) {
     return await this.getRepo().findOne({ code, user_id: userId });
+  }
+
+  /**
+   * Delete OTP from database
+   * @param id number
+   */
+  async deleteOTP(id: number) {
+    await this.getRepo().delete({ id });
   }
 }

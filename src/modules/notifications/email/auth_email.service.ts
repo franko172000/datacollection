@@ -14,9 +14,9 @@ export class AuthEmailService {
 
   async confirmationEmail() {
     this.brooker.consumeMessage(authConfig.confirmation, (msg: any, ack: any) => {
-      const { email, firstName, lastName } = msg;
+      const { email, firstName, lastName, otp } = msg;
       //TODO: connect to third-party email service
-      console.log(email, firstName, lastName);
+      console.log(email, firstName, lastName, otp);
     });
   }
 

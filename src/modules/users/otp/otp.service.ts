@@ -1,5 +1,7 @@
-import { OTPRepository } from './repositories/otp.repository';
+import { Service } from 'typedi';
+import { OTPRepository } from '../repositories/otp.repository';
 
+@Service()
 export class OTPService {
   constructor(private readonly otpRepo: OTPRepository) {}
 
@@ -13,7 +15,7 @@ export class OTPService {
     const code = Math.floor(100000 + Math.random() * 900000);
     //add number to database
     await this.otpRepo.createOTP({
-      userId,
+      user_id: userId,
       code,
     });
     return code;
@@ -23,9 +25,14 @@ export class OTPService {
    * Validates generated OTP
    * @param userId
    * @param code
-   * @returns
+   * @returns boolean
    */
+
   async validateOTP(userId: string, code: number) {
-    return;
+    const otp = await this.otpRepo.getOTP(code, userId);
+    if (otp) {
+      this.otpRepo.deleteOTP(otp.id);
+      return true;
+    }
   }
 }

@@ -15,3 +15,8 @@ export interface IUpdateProfile {
   companyName: string;
   industry: string;
 }
+export interface Iotp {
+  user_id: string;
+  code: number;
+}
+

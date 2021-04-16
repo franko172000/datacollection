@@ -3,5 +3,5 @@ import MessageBrooker from './message_brooker';
 
 export default async () => {
   const brooker = await MessageBrooker.getInstance();
-  new EmailReceivers(brooker);
+  EmailReceivers(brooker);
 };
