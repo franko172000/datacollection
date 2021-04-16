@@ -41,9 +41,9 @@ export class CustomErrorHandler implements ExpressErrorMiddlewareInterface {
       responseObject.errors = [];
       error.errors.forEach((element: ValidationError) => {
         Object.keys(element.constraints).forEach(type => {
-          const errorObj = {};
-          errorObj[element.property] = element.constraints[type];
-          responseObject.errors.push(errorObj);
+          //const errorObj = {};
+          //errorObj[element.property] = element.constraints[type];
+          responseObject.errors.push(element.constraints[type]);
         });
       });
     } else {

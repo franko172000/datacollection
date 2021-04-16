@@ -178,6 +178,7 @@ export default class AuthService extends BaseService {
    * @returns JSON
    */
   async updateUserPassword(password: string, userId: string){
+    console.log(userId)
     //update account
     const userData = await this.userRepo.updateAccount({ password }, userId);
 
