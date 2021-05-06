@@ -1,7 +1,15 @@
-import { Body, Controller, Get, Patch, Post, Req, UseBefore } from 'routing-controllers';
+import { Body, Controller, Get, Params, Patch, Post, Req, UseBefore } from 'routing-controllers';
 import { Service } from 'typedi';
 import { getUserIdFromRequest } from '../../../helper/request.helper';
-import { UserLoginDTO, UserRegisterDTO, OtpDTO, ResetPasswordDTO, updatePasswordDTO } from '../dto/auth.dto';
+import {
+  UserLoginDTO,
+  UserRegisterDTO,
+  OtpDTO,
+  ResetPasswordDTO,
+  updatePasswordDTO,
+  tokenDTO,
+  forgotPasswordDTO,
+} from '../dto/auth.dto';
 import { AuthGuard } from '../middleware/auth.middleware';
 import AuthService from './auth.service';
 
@@ -40,8 +48,9 @@ export default class AuthController {
    * @returns json
    */
   @Post('validate-otp')
-  async validateOTP(@Body() body: OtpDTO) {
-    return await this.authService.validateOTP(body);
+  @UseBefore(AuthGuard)
+  async validateOTP(@Body() body: OtpDTO, @Req() req: any) {
+    return await this.authService.validateOTP(body, getUserIdFromRequest(req));
   }
 
   /**
@@ -50,9 +59,10 @@ export default class AuthController {
    * @param req
    * @returns
    */
-  @Post('reset-password')
+  @Patch('reset-password')
+  @UseBefore(AuthGuard)
   async resetPassword(@Body() body: ResetPasswordDTO, @Req() req: any) {
-    return await this.authService.resetPassword(body, req.userId);
+    return await this.authService.resetPassword(body, getUserIdFromRequest(req));
   }
 
   /**
@@ -63,7 +73,7 @@ export default class AuthController {
    */
   @Patch('update-password')
   @UseBefore(AuthGuard)
-  async updateUserPassword(@Body() body: updatePasswordDTO, @Req() req: any){
+  async updateUserPassword(@Body() body: updatePasswordDTO, @Req() req: any) {
     return await this.authService.updateUserPassword(body.password, getUserIdFromRequest(req));
   }
 
@@ -73,7 +83,28 @@ export default class AuthController {
    * @returns JSON
    */
   @Patch('confirm-email')
-  async activateAccount(@Body() body: OtpDTO) {
-    return await this.authService.confirmEmail(body);
+  @UseBefore(AuthGuard)
+  async activateAccount(@Body() body: OtpDTO, @Req() req: any) {
+    return await this.authService.confirmEmail(body, getUserIdFromRequest(req));
+  }
+
+  /**
+   * Get token
+   * @param body
+   * @returns JSON
+   */
+  @Get('token/:email')
+  async getToken(@Params() param: tokenDTO) {
+    return await this.authService.generateUserToken(param.email);
+  }
+
+  /**
+   * Get token
+   * @param body
+   * @returns JSON
+   */
+  @Post('forgot-password')
+  async forgotPassword(@Body() body: forgotPasswordDTO) {
+    return await this.authService.forgotPassword(body.email);
   }
 }

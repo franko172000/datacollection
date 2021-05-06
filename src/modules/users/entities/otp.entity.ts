@@ -9,7 +9,7 @@ export class OTP {
   code: string;
 
   @Column({ nullable: false })
-  email: string;
+  user_id: string;
 
   @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;

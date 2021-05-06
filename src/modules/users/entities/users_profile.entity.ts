@@ -3,8 +3,8 @@ import { Users } from './users.entity';
 
 @Entity({ name: 'users_profile' })
 export class UsersProfile {
-  @PrimaryColumn()
-  user_id: string;
+  @PrimaryColumn({ name: 'user_id' })
+  userId: string;
 
   @Column({ name: 'first_name', nullable: false })
   firstName: string;

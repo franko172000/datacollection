@@ -15,5 +15,7 @@ module.exports = {
     '@typescript-eslint/no-parameter-properties': 0,
     '@typescript-eslint/interface-name-prefix': 0,
     '@typescript-eslint/explicit-module-boundary-types': 'off',
+    'eslint-disable-next-line': 'off',
+    '@typescript-eslint/no-explicit-any': 'off',
   },
 };

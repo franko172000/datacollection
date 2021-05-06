@@ -48,4 +48,9 @@ export default {
 
   amqpUrl: process.env.AMQP_URL,
   brookerChannels: msgChannels,
+  /**
+   * Send grid API key
+   */
+  sendgridKey: process.env.SENDGRID_API,
+  emailSender: process.env.EMAIL_FROM,
 };

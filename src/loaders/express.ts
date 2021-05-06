@@ -21,6 +21,7 @@ export default (app: express.Application): void => {
 
   //Let routing controller use TypeDI as dependency injector
   useContainer(Container);
+
   /**
    * Intialise routing controller
    */
@@ -30,7 +31,9 @@ export default (app: express.Application): void => {
     defaultErrorHandler: false, // disable default error handler
     //register all controllers
     controllers: [process.cwd() + '/src/**/*.controller.ts'],
+    //register all middlewares
     middlewares: [process.cwd() + '/src/**/*.middleware.ts'],
+    //register all interceptors
     interceptors: [process.cwd() + '/src/**/*.interceptor.ts'],
   });
 

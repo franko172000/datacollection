@@ -24,9 +24,11 @@ export default class AuthGuardSerivce {
    * @param token
    * @returns
    */
-  async isBlacklisted(token: string): Promise<boolean> {
+  async isBlacklisted(token: string): Promise<void> {
     const count = await this.blacklistRepo.checkBlacklist(token);
-    return count > 0;
+    if (count > 0) {
+      throw new Error('Token blaclisted');
+    }
   }
 
   /**
@@ -36,6 +38,7 @@ export default class AuthGuardSerivce {
    */
   async validateToken(token: string) {
     try {
+      await this.isBlacklisted(token);
       const decoded = verify(token, config.jwtSecret);
       return decoded;
     } catch (err) {

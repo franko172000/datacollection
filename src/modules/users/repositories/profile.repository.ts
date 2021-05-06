@@ -1,5 +1,6 @@
 import { Service } from 'typedi';
 import { BaseRepository } from '../../../repository/base.repository';
+import { UpdateProfileDTO } from '../dto/profile.dto';
 import { UsersProfile } from '../entities/users_profile.entity';
 import { IBasicProfile, IUpdateProfile } from '../interfaces';
 
@@ -13,7 +14,11 @@ export class ProfileRepository extends BaseRepository {
     return await this.getRepo().save(data);
   }
 
-  async updateProfile(user_id: string, data: IUpdateProfile) {
-    return await this.getRepo().update({ user_id }, data);
+  async updateProfile(userId: string, data: UpdateProfileDTO) {
+    return await this.getRepo().update({ userId }, data);
+  }
+
+  async getProfile(userId: string) {
+    return await this.getRepo().findOne({ userId });
   }
 }

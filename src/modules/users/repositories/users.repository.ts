@@ -33,6 +33,20 @@ export class UsersRepository extends BaseRepository {
   }
 
   /**
+   * Get user by id
+   * @param userid user email
+   * @returns object
+   */
+  async getUserById(userid: string) {
+    return await this.getRepo().findOne(
+      { id: userid },
+      {
+        relations: ['profile'],
+      },
+    );
+  }
+
+  /**
    * Update user account
    * @param data user data
    * @param userId user id
@@ -51,8 +65,8 @@ export class UsersRepository extends BaseRepository {
     return await this.getRepo().update(
       { id: userId },
       {
-        is_activated: 1,
-        account_status: accountStatus.ac,
+        isActivated: 1,
+        accountStatus: accountStatus.ac,
       },
     );
   }

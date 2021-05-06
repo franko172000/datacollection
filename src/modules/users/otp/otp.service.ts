@@ -31,7 +31,7 @@ export class OTPService {
   async validateOTP(userId: string, code: number) {
     const otp = await this.otpRepo.getOTP(code, userId);
     if (otp) {
-      this.otpRepo.deleteOTP(otp.id);
+      //this.otpRepo.deleteOTP(otp.id);
       return true;
     }
   }

@@ -48,7 +48,7 @@ export class UserLoginDTO {
 
 export class OtpDTO {
   @IsString()
-  userId: string;
+  token: string;
 
   @IsNumber()
   code: number;
@@ -60,6 +60,9 @@ export class ResetPasswordDTO {
   })
   password: string;
 
+  @IsString()
+  token: string;
+
   @IsNumber()
   code: number;
 }
@@ -69,4 +72,13 @@ export class updatePasswordDTO {
     message: pwdMessage,
   })
   password: string;
+}
+
+export class tokenDTO {
+  @IsEmail()
+  email: string;
+}
+export class forgotPasswordDTO {
+  @IsEmail()
+  email: string;
 }

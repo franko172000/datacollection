@@ -1,6 +1,5 @@
 import 'reflect-metadata';
 import express from 'express';
-import Container from 'typedi';
 import http from 'http';
 import config from './config';
 import Logger from './loaders/logger';
@@ -37,4 +36,5 @@ const startServer = async () => {
     Logger.info('Listening on' + bind);
   });
 };
+
 startServer();

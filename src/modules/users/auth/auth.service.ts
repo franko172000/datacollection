@@ -76,13 +76,32 @@ export default class AuthService extends BaseService {
     //generate otp
     const otp = await this.otpService.generateOTP(userId);
 
+    //sign JWT token
+    const token = this.generateToken(userId, email);
+
     //send confirmation email
     this.msgBrooker.sendMessage(
       config.brookerChannels.email.auth.confirmation,
       JSON.stringify({ firstName, lastName, email, otp }),
     );
 
-    return this.okResponse('User created!');
+    return this.okResponse('User created!', { token });
+  }
+
+  /**
+   * Generate token
+   * @param email user email
+   * @returns object
+   */
+  async generateUserToken(email: string) {
+    const user = await this.userRepo.getUserByEmail(email);
+    if (!user) {
+      throw new NotFoundError('User not found');
+    }
+
+    const token = this.generateToken(user.id, email);
+
+    return this.okResponse('Token', { token });
   }
 
   /**
@@ -90,9 +109,9 @@ export default class AuthService extends BaseService {
    * @param data request body
    * @returns JSON
    */
-  async validateOTP(data: OtpDTO) {
+  async validateOTP(data: OtpDTO, userId: string) {
     //1. check geneeated tokenk
-    const { userId, code } = data;
+    const { code } = data;
 
     //check if otp is valid
     await this.checkOTP(userId, code);
@@ -104,17 +123,33 @@ export default class AuthService extends BaseService {
    * Validates OPT and activates user account
    * @param data request body
    */
-  async confirmEmail(data: OtpDTO) {
-    const { userId, code } = data;
+  async confirmEmail(data: OtpDTO, userId: string) {
+    const { code } = data;
 
     //check if otp is valid
     await this.checkOTP(userId, code);
 
-    //activate acount
-    const userData = this.userRepo.activateAccount(userId);
+    //get user info
+    const userData = await this.userRepo.getUserById(userId);
+
+    console.log(userData);
+
     if (!userData) {
       throw new NotFoundError('User not found');
     }
+
+    //activate acount
+    await this.userRepo.activateAccount(userId);
+
+    //send welcome email
+    this.msgBrooker.sendMessage(
+      config.brookerChannels.email.auth.welcome,
+      JSON.stringify({
+        firstName: userData.profile.firstName,
+        lastName: userData.profile.lastName,
+        email: userData.email,
+      }),
+    );
 
     return this.okResponse('Account activated');
   }
@@ -125,7 +160,7 @@ export default class AuthService extends BaseService {
    * @returns JSON
    */
   async forgotPassword(email: string) {
-    const data = this.userRepo.getUserByEmail(email);
+    const data = await this.userRepo.getUserByEmail(email);
 
     if (!data) {
       throw new NotFoundError('User not found');
