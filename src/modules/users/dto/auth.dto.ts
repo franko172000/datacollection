@@ -26,9 +26,6 @@ export class UserRegisterDTO {
   @IsOptional()
   companyName: string;
 
-  @IsOptional()
-  contactPerson: string;
-
   @IsEmail()
   email: string;
 

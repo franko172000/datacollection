@@ -14,5 +14,5 @@ export default async () => {
    * Use TypeDI as TypeORM dependency injector
    */
   //useContainer(Container);
-  await createConnection();
+  return await createConnection();
 };

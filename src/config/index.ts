@@ -1,8 +1,26 @@
 import dotenv from 'dotenv';
 import msgChannels from './brooker_channels';
 // Set the NODE_ENV to 'development' by default
-process.env.NODE_ENV = process.env.NODE_ENV || 'development';
+const environment = process.env.NODE_ENV;
 const envFound = dotenv.config();
+
+//default development db config
+const db = {
+  host: process.env.DB_HOST,
+  username: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_NAME,
+  port: process.env.DB_PORT ? parseInt(process.env.DB_PORT) : 3306,
+  type: process.env.DB_TYPE || 'mysql',
+};
+
+//Test db for running unit test
+if (environment && environment.trim() === 'test') {
+  db['host'] = process.env.TEST_DB_HOST;
+  db['username'] = process.env.TEST_DB_USER;
+  db['password'] = process.env.TEST_DB_PASSWORD;
+  db['database'] = process.env.TEST_DB_NAME;
+}
 
 if (envFound.error) {
   // This error should crash whole process
@@ -10,6 +28,7 @@ if (envFound.error) {
 }
 
 export default {
+  environment: environment.trim(),
   /**
    * Your favorite port
    */
@@ -37,14 +56,7 @@ export default {
   /**
    * Database configurations
    */
-  db: {
-    host: process.env.DB_HOST || '',
-    user: process.env.DB_USER || '',
-    password: process.env.DB_PASSWORD || '',
-    name: process.env.DB_NAME || '',
-    port: process.env.DB_PORT || '3306',
-    type: process.env.DB_TYPE || '',
-  },
+  db,
 
   amqpUrl: process.env.AMQP_URL,
   brookerChannels: msgChannels,

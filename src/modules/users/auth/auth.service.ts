@@ -58,7 +58,7 @@ export default class AuthService extends BaseService {
    */
   async registerUser(user: UserRegisterDTO) {
     //destruct user object
-    const { firstName, lastName, email } = user;
+    const { firstName, lastName, email, companyName } = user;
     let { password } = user;
     //encrypt password
     password = bcrypt.hashSync(password, 10);
@@ -68,9 +68,10 @@ export default class AuthService extends BaseService {
     const userId = userObj.id;
     //create profile
     await this.profileUtil.createProfile({
-      user_id: userId,
+      userId,
       firstName,
       lastName,
+      companyName,
     });
 
     //generate otp
@@ -132,7 +133,6 @@ export default class AuthService extends BaseService {
     //get user info
     const userData = await this.userRepo.getUserById(userId);
 
-    console.log(userData);
 
     if (!userData) {
       throw new NotFoundError('User not found');

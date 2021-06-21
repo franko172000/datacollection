@@ -14,7 +14,7 @@ export class UsersRepository extends BaseRepository {
    * @param data user data
    * @returns object
    */
-  async createUser(data: IUsers) {
+  async createUser(data: IUsers): Promise<any> {
     return await this.getRepo().save(data);
   }
 
@@ -23,7 +23,7 @@ export class UsersRepository extends BaseRepository {
    * @param email user email
    * @returns object
    */
-  async getUserByEmail(email: string) {
+  async getUserByEmail(email: string): Promise<any> {
     return await this.getRepo().findOne(
       { email },
       {
@@ -37,7 +37,7 @@ export class UsersRepository extends BaseRepository {
    * @param userid user email
    * @returns object
    */
-  async getUserById(userid: string) {
+  async getUserById(userid: string): Promise<any> {
     return await this.getRepo().findOne(
       { id: userid },
       {
@@ -52,7 +52,7 @@ export class UsersRepository extends BaseRepository {
    * @param userId user id
    * @returns object
    */
-  async updateAccount(data: any, userId: string){
+  async updateAccount(data: any, userId: string): Promise<any> {
     return await this.getRepo().update({ id: userId }, data);
   }
 
@@ -61,7 +61,7 @@ export class UsersRepository extends BaseRepository {
    * @param userId user id
    * @returns object
    */
-  async activateAccount(userId: string) {
+  async activateAccount(userId: string): Promise<any> {
     return await this.getRepo().update(
       { id: userId },
       {

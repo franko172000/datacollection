@@ -3,6 +3,7 @@ import { ValidationError } from 'class-validator';
 import * as express from 'express';
 import { Service } from 'typedi';
 
+const environment = process.env.NODE_ENV;
 /**
  * Express middleware to catch all errors throwed in controlers.
  * Should be first in error chain as it sends response to client.
@@ -25,7 +26,6 @@ export class CustomErrorHandler implements ExpressErrorMiddlewareInterface {
    */
   public error(error: any, _req: express.Request, res: express.Response, _next: express.NextFunction) {
     const responseObject = {} as any;
-
     if (error.name) {
       // show name only if in development mode and if error message exist too
       responseObject.name = error.name;
@@ -55,8 +55,7 @@ export class CustomErrorHandler implements ExpressErrorMiddlewareInterface {
       }
 
       if (error instanceof Error) {
-        const developmentMode: boolean = process.env.NODE_ENV === 'development';
-
+        const developmentMode: boolean = environment.trim() === 'development';
         // set response error fields
         if (error.message) {
           responseObject.message = error.message;
