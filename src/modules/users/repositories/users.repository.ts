@@ -14,8 +14,8 @@ export class UsersRepository extends BaseRepository {
    * @param data user data
    * @returns object
    */
-  async createUser(data: IUsers) {
-    return await this.getRepo().save(data);
+  async createUser(data: IUsers): Promise<any> {
+    return this.getRepo().save(data);
   }
 
   /**
@@ -23,8 +23,8 @@ export class UsersRepository extends BaseRepository {
    * @param email user email
    * @returns object
    */
-  async getUserByEmail(email: string) {
-    return await this.getRepo().findOne(
+  async getUserByEmail(email: string): Promise<any> {
+    return this.getRepo().findOne(
       { email },
       {
         relations: ['profile'],
@@ -37,8 +37,8 @@ export class UsersRepository extends BaseRepository {
    * @param userid user email
    * @returns object
    */
-  async getUserById(userid: string) {
-    return await this.getRepo().findOne(
+  async getUserById(userid: string): Promise<any> {
+    return this.getRepo().findOne(
       { id: userid },
       {
         relations: ['profile'],
@@ -52,8 +52,8 @@ export class UsersRepository extends BaseRepository {
    * @param userId user id
    * @returns object
    */
-  async updateAccount(data: any, userId: string){
-    return await this.getRepo().update({ id: userId }, data);
+  async updateAccount(data: any, userId: string): Promise<any> {
+    return this.getRepo().update({ id: userId }, data);
   }
 
   /**
@@ -61,8 +61,8 @@ export class UsersRepository extends BaseRepository {
    * @param userId user id
    * @returns object
    */
-  async activateAccount(userId: string) {
-    return await this.getRepo().update(
+  async activateAccount(userId: string): Promise<any> {
+    return this.getRepo().update(
       { id: userId },
       {
         isActivated: 1,

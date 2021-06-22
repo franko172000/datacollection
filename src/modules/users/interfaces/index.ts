@@ -4,9 +4,10 @@ export interface IUsers {
 }
 
 export interface IBasicProfile {
-  user_id: string;
+  userId: string;
   firstName: string;
   lastName: string;
+  companyName: string;
 }
 export interface IUpdateProfile {
   firstName: string;

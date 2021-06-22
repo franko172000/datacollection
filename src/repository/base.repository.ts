@@ -8,6 +8,6 @@ export abstract class BaseRepository {
   }
 
   getRepo() {
-    return getConnection().getRepository(this.entity);
+    return getConnection().getRepository(this.entity)
   }
 }

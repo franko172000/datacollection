@@ -6,6 +6,7 @@ import { useContainer, useExpressServer } from 'routing-controllers';
 import MessageBrooker from '../brooker';
 import Container from 'typedi';
 import cors from 'cors';
+// const createError = require('http-errors');
 
 export default (app: express.Application): void => {
   //register message brooker receiver
