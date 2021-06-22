@@ -15,7 +15,7 @@ export class OTPRepository extends BaseRepository {
    * @returns promise
    */
   async createOTP(data: Iotp) {
-    return await this.getRepo().save(data);
+    return this.getRepo().save(data);
   }
 
   /**
@@ -25,7 +25,7 @@ export class OTPRepository extends BaseRepository {
    * @returns promise
    */
   async getOTP(code: number, userId: string) {
-    return await this.getRepo().findOne({ code, user_id: userId });
+    return this.getRepo().findOne({ code, user_id: userId });
   }
 
   /**
@@ -33,6 +33,6 @@ export class OTPRepository extends BaseRepository {
    * @param id number
    */
   async deleteOTP(id: number) {
-    await this.getRepo().delete({ id });
+    this.getRepo().delete({ id });
   }
 }

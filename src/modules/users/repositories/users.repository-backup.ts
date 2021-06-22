@@ -7,6 +7,6 @@ import { IUsers } from '../interfaces';
 @EntityRepository(Users)
 export class UsersRepository extends Repository<Users> {
   async createUser(data: IUsers) {
-    return await this.save(data);
+    return this.save(data);
   }
 }

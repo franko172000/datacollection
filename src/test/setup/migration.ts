@@ -2,7 +2,7 @@ import { createConnection } from 'typeorm';
 import config from '../../config';
 
 const initConnection = async () => {
-  return await createConnection({
+  return createConnection({
     ...config.db,
     logging: true,
     migrations: [process.cwd() + '/src/migrations/**/*.ts'],

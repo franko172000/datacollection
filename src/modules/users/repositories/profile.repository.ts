@@ -11,14 +11,14 @@ export class ProfileRepository extends BaseRepository {
   }
 
   async createProfile(data: IBasicProfile) {
-    return await this.getRepo().save(data);
+    return this.getRepo().save(data);
   }
 
   async updateProfile(userId: string, data: UpdateProfileDTO) {
-    return await this.getRepo().update({ userId }, data);
+    return this.getRepo().update({ userId }, data);
   }
 
   async getProfile(userId: string) {
-    return await this.getRepo().findOne({ userId });
+    return this.getRepo().findOne({ userId });
   }
 }

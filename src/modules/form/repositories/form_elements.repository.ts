@@ -12,26 +12,26 @@ export class FormElementsRepository extends BaseRepository {
   async createElement(data: FormElementsDTO) {
     data['optionValues'] = data.options.join(',');
     /**this will trigger the @BeforeInsert() event on the entity class */
-    return await this.getRepo().save(this.getRepo().create(data));
+    return this.getRepo().save(this.getRepo().create(data));
   }
 
   async deleteElement(id: FormIdDTO) {
-    return await this.getRepo().delete({ id });
+    return this.getRepo().delete({ id });
   }
 
   async updateElement(id: FormIdDTO, data: FormElementsDTO) {
-    return await this.getRepo().update({ id }, data);
+    return this.getRepo().update({ id }, data);
   }
 
   async updateElementsPosition(id: FormIdDTO, sortNo: number) {
-    return await this.getRepo().update({ id }, { sortNo });
+    return this.getRepo().update({ id }, { sortNo });
   }
 
   async getElements(formId: FormIdDTO) {
-    return await this.getRepo().find({ formId });
+    return this.getRepo().find({ formId });
   }
 
   async getElementById(id: FormIdDTO) {
-    return await this.getRepo().findOne(id);
+    return this.getRepo().findOne(id);
   }
 }

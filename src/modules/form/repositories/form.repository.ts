@@ -11,22 +11,22 @@ export class FormRepository extends BaseRepository {
 
   async createForm(userId: string, data: FormDTO) {
     data['userId'] = userId;
-    return await this.getRepo().save(data);
+    return this.getRepo().save(data);
   }
 
   async updateForm(id: number, userId: string, data: FormDTO) {
-    return await this.getRepo().update({ id, userId }, data);
+    return this.getRepo().update({ id, userId }, data);
   }
 
   async deleteForm(id: number, userId: string) {
-    return await this.getRepo().delete({ id, userId });
+    return this.getRepo().delete({ id, userId });
   }
 
   async getUserForms(userId: string) {
-    return await this.getRepo().find({ userId });
+    return this.getRepo().find({ userId });
   }
 
   async getFormById(id: number) {
-    return await this.getRepo().findOne({ id });
+    return this.getRepo().findOne({ id });
   }
 }
