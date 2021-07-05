@@ -1,8 +1,17 @@
-import { Entity, Column, CreateDateColumn, UpdateDateColumn, PrimaryColumn, OneToOne, JoinColumn } from 'typeorm';
+import {
+  Entity,
+  Column,
+  CreateDateColumn,
+  UpdateDateColumn,
+  PrimaryColumn,
+  OneToOne,
+  JoinColumn,
+  BaseEntity,
+} from 'typeorm';
 import { Users } from './users.entity';
 
 @Entity({ name: 'users_profile' })
-export class UsersProfile {
+export class UsersProfile extends BaseEntity {
   @PrimaryColumn({ name: 'user_id' })
   userId: string;
 

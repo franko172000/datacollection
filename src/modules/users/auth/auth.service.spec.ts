@@ -1,7 +1,9 @@
 import Container from 'typedi';
 import dbconnection from '../../../loaders/dbconnection';
-import { UsersRepository } from '../repositories/users.repository';
+import { accountStatus } from '../enum';
+import * as bcrypt from 'bcrypt';
 import AuthService from './auth.service';
+import { Users } from '../entities/users.entity';
 
 const userData = {
   firstName: 'John',
@@ -11,19 +13,15 @@ const userData = {
   password: '@JohnDoe123',
 };
 
-//jest.mock('../../../brooker/message_brooker');
-
+let registeredUser: any;
 let authservice: AuthService;
 let connection: any;
-let userRepo: UsersRepository;
 
 describe('Testing Auth service class', () => {
   beforeAll(async () => {
     //init connection
     connection = await dbconnection();
     authservice = Container.get(AuthService);
-    userRepo = Container.get(UsersRepository);
-    //AuthService.mockClear()
   });
 
   afterAll(done => {
@@ -32,20 +30,28 @@ describe('Testing Auth service class', () => {
   });
 
   it('Test service can register new user', async () => {
-    const result1 = await authservice.registerUser(userData);
-    const result2 = await userRepo.getRepo().count();
-    expect(result2).toEqual(1);
-    expect(result1).toHaveProperty('data');
-    expect(result1).toHaveProperty('message');
-    expect(result1.data).toHaveProperty('token');
+    const result = await authservice.registerUser(userData);
+    registeredUser = await Users.find();
+    const user: any = registeredUser[0];
+    expect(registeredUser.length).toEqual(1);
+    expect(user).toHaveProperty('profile');
+    expect(user.profile).toHaveProperty('userId');
+    expect(user.profile.userId).toEqual(user.id);
+    expect(result).toHaveProperty('data');
+    expect(result).toHaveProperty('message');
+    expect(result.data).toHaveProperty('token');
+    expect(result.data.token).toEqual(expect.any(String));
+    expect(result.message).toEqual('User created!');
   });
 
-  it('Testing user can login', async () => {
+  it('Test user can login', async () => {
     const { email, password } = userData;
     const result = await authservice.login({ email, password });
     expect(result).toHaveProperty('data');
     expect(result).toHaveProperty('message');
     expect(result.data).toHaveProperty('token');
+    expect(result.data.token).toEqual(expect.any(String));
+    expect(result.message).toEqual('Login valid');
   });
 
   it('Testing invalid login', async () => {
@@ -60,10 +66,104 @@ describe('Testing Auth service class', () => {
     }
   });
 
-  it('Testing service can get user token', async () => {
+  it('Test service can generate user token', async () => {
     const result = await authservice.generateUserToken(userData.email);
     expect(result).toHaveProperty('data');
     expect(result).toHaveProperty('message');
     expect(result.data).toHaveProperty('token');
+    expect(result.data.token).toEqual(expect.any(String));
+    expect(result.message).toEqual('Generated Token');
+  });
+
+  it('Test service can activate account', async () => {
+    const id = registeredUser[0].id;
+    const result = await authservice.confirmEmail(id);
+    const user: any = await Users.findOne({ id });
+    expect(user).toHaveProperty('isActivated');
+    expect(user).toHaveProperty('accountStatus');
+    expect(user.isActivated).toEqual(true);
+    expect(user.accountStatus).toEqual(accountStatus.ac);
+    expect(result).toHaveProperty('data');
+    expect(result).toHaveProperty('message');
+    expect(result.message).toEqual('Account activated');
+  });
+
+  it('Test service account activation can fail', async () => {
+    try {
+      await authservice.confirmEmail('test_id');
+    } catch (err) {
+      expect(err.httpCode).toEqual(404);
+      expect(err.message).toEqual('User not found');
+    }
+  });
+
+  it('Test forgot password request', async () => {
+    const result = await authservice.forgotPassword(userData.email);
+    expect(result).toHaveProperty('data');
+    expect(result).toHaveProperty('message');
+    expect(result.data).toHaveProperty('token');
+    expect(result.data.token).toEqual(expect.any(String));
+    expect(result.message).toEqual('Password reset email sent');
+  });
+
+  it('Test forgot password request can fail', async () => {
+    try {
+      await authservice.forgotPassword('test_email@test.com');
+    } catch (err) {
+      expect(err.httpCode).toEqual(404);
+      expect(err.message).toEqual('User not found');
+    }
+  });
+
+  it('Test service can reset password', async () => {
+    const { id, password } = registeredUser[0];
+    const result = await authservice.resetPassword(
+      {
+        password: '@Testing1234',
+        token: 'test token',
+      },
+      id,
+    );
+    const updatedUser: any = await Users.findOne({ id });
+    const checkPassword = await bcrypt.compare(password, updatedUser.password);
+    expect(checkPassword).toEqual(false);
+    expect(result).toHaveProperty('data');
+    expect(result).toHaveProperty('message');
+    expect(result.message).toEqual('Password updated');
+  });
+
+  it('Test reset password can fail', async () => {
+    try {
+      await authservice.resetPassword(
+        {
+          password: '@Testing1234',
+          token: 'test token',
+        },
+        'testID',
+      );
+    } catch (err) {
+      expect(err.httpCode).toEqual(404);
+      expect(err.message).toEqual('User not found');
+    }
+  });
+
+  it('Test service can update password', async () => {
+    const { id, password } = registeredUser[0];
+    const result = await authservice.updateUserPassword('@Testing1234', id);
+    const updatedUser: any = await Users.findOne({ id });
+    const checkPassword = await bcrypt.compare(password, updatedUser.password);
+    expect(checkPassword).toEqual(false);
+    expect(result).toHaveProperty('data');
+    expect(result).toHaveProperty('message');
+    expect(result.message).toEqual('Password updated');
+  });
+
+  it('Test update password can fail', async () => {
+    try {
+      await authservice.updateUserPassword('@Testing1234', 'test_user_id');
+    } catch (err) {
+      expect(err.httpCode).toEqual(404);
+      expect(err.message).toEqual('User not found');
+    }
   });
 });

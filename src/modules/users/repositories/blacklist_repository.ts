@@ -1,13 +1,10 @@
 import { Service } from 'typedi';
-import { BaseRepository } from '../../../repository/base.repository';
+import { EntityRepository, Repository } from 'typeorm';
 import { UsersBlacklistToken } from '../entities/users_blacklist_token.entity';
 
 @Service()
-export class BlacklistTokenRepository extends BaseRepository {
-  constructor() {
-    super(UsersBlacklistToken);
-  }
-
+@EntityRepository(UsersBlacklistToken)
+export class BlacklistTokenRepository extends Repository<UsersBlacklistToken> {
   /**
    * Add token to blacklist
    * @param token
@@ -15,7 +12,7 @@ export class BlacklistTokenRepository extends BaseRepository {
    * @returns
    */
   async blacklistToken(token: string, expireAt: string): Promise<unknown> {
-    return this.getRepo().save({
+    return this.save({
       token,
       expireAt,
     });
@@ -27,6 +24,6 @@ export class BlacklistTokenRepository extends BaseRepository {
    * @returns Promise<number>
    */
   async checkBlacklist(token: string): Promise<number> {
-    return this.getRepo().count({ token });
+    return this.count({ token });
   }
 }

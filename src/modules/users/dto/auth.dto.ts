@@ -59,9 +59,6 @@ export class ResetPasswordDTO {
 
   @IsString()
   token: string;
-
-  @IsNumber()
-  code: number;
 }
 
 export class updatePasswordDTO {

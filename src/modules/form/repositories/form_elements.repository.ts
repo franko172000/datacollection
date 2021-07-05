@@ -1,37 +1,34 @@
 import { Service } from 'typedi';
-import { BaseRepository } from '../../../repository/base.repository';
+import { EntityRepository, Repository } from 'typeorm';
 import { FormElementsDTO, FormIdDTO } from '../dto/form.dto';
 import { FormElements } from '../entities/form_elements.entity';
 
 @Service()
-export class FormElementsRepository extends BaseRepository {
-  constructor() {
-    super(FormElements);
-  }
-
+@EntityRepository(FormElements)
+export class FormElementsRepository extends Repository<FormElements> {
   async createElement(data: FormElementsDTO) {
     data['optionValues'] = data.options.join(',');
     /**this will trigger the @BeforeInsert() event on the entity class */
-    return this.getRepo().save(this.getRepo().create(data));
+    return this.save(this.create(data));
   }
 
-  async deleteElement(id: FormIdDTO) {
-    return this.getRepo().delete({ id });
+  async deleteElement(id: number) {
+    return this.delete({ id });
   }
 
-  async updateElement(id: FormIdDTO, data: FormElementsDTO) {
-    return this.getRepo().update({ id }, data);
+  async updateElement(id: number, data: FormElementsDTO) {
+    return this.update({ id }, data);
   }
 
-  async updateElementsPosition(id: FormIdDTO, sortNo: number) {
-    return this.getRepo().update({ id }, { sortNo });
+  async updateElementsPosition(id: number, sortNo: number) {
+    return this.update({ id }, { sortNo });
   }
 
-  async getElements(formId: FormIdDTO) {
-    return this.getRepo().find({ formId });
+  async getElements(formId: number) {
+    return this.find({ formId });
   }
 
-  async getElementById(id: FormIdDTO) {
-    return this.getRepo().findOne(id);
+  async getElementById(id: number) {
+    return this.findOne(id);
   }
 }

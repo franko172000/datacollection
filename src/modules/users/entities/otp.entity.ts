@@ -1,15 +1,15 @@
-import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { BaseEntity, Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 
 @Entity({ name: 'user_otp' })
-export class OTP {
+export class OTP extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
   @Column({ nullable: false })
-  code: string;
+  code: number;
 
   @Column({ nullable: false })
-  user_id: string;
+  userId: string;
 
   @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;

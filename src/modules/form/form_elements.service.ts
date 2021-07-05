@@ -1,12 +1,13 @@
 import { NotFoundError } from 'routing-controllers';
 import { Service } from 'typedi';
+import { InjectRepository } from 'typeorm-typedi-extensions';
 import { BaseService } from '../../services/base.service';
-import { FormElementsDTO, FormIdDTO } from './dto/form.dto';
+import { FormElementsDTO } from './dto/form.dto';
 import { FormElementsRepository } from './repositories/form_elements.repository';
 
 @Service()
 export default class FormElementsService extends BaseService {
-  constructor(private readonly elementsRepo: FormElementsRepository) {
+  constructor(@InjectRepository(FormElementsRepository) private readonly elementsRepo: FormElementsRepository) {
     super();
   }
 
@@ -25,8 +26,8 @@ export default class FormElementsService extends BaseService {
    * @param id number
    * @returns object
    */
-  async deleteElement(id: FormIdDTO) {
-    const result = await this.elementsRepo.deleteElement(id);
+  async deleteElement(formId: number) {
+    const result = await this.elementsRepo.deleteElement(formId);
     if (result.raw.affectedRows === 0) {
       throw new NotFoundError('Element not found');
     }
@@ -39,8 +40,8 @@ export default class FormElementsService extends BaseService {
    * @param data FormElementsDTO
    * @returns object
    */
-  async updateElement(id: FormIdDTO, data: FormElementsDTO) {
-    const result = await this.elementsRepo.updateElement(id, data);
+  async updateElement(formId: number, data: FormElementsDTO) {
+    const result = await this.elementsRepo.updateElement(formId, data);
     if (result.raw.affectedRows === 0) {
       throw new NotFoundError('Element not found');
     }
@@ -53,8 +54,8 @@ export default class FormElementsService extends BaseService {
    * @param sortNo number
    * @returns object
    */
-  async updateElementsPosition(id: FormIdDTO, sortNo: number) {
-    const result = await this.elementsRepo.updateElementsPosition(id, sortNo);
+  async updateElementsPosition(formId: number, sortNo: number) {
+    const result = await this.elementsRepo.updateElementsPosition(formId, sortNo);
     if (result.raw.affectedRows === 0) {
       throw new NotFoundError('Element not found');
     }
@@ -66,7 +67,7 @@ export default class FormElementsService extends BaseService {
    * @param formId number
    * @returns object
    */
-  async getElements(formId: FormIdDTO) {
+  async getElements(formId: number) {
     const result = await this.elementsRepo.getElements(formId);
     return this.okResponse('ok', result);
   }
@@ -76,8 +77,8 @@ export default class FormElementsService extends BaseService {
    * @param id number
    * @returns object
    */
-  async getElementById(id: FormIdDTO) {
-    const result = await this.elementsRepo.getElementById(id);
+  async getElementById(formId: number) {
+    const result = await this.elementsRepo.getElementById(formId);
     if (!result) {
       throw new NotFoundError('Element not found');
     }

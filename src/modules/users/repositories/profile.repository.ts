@@ -1,24 +1,21 @@
 import { Service } from 'typedi';
-import { BaseRepository } from '../../../repository/base.repository';
+import { EntityRepository, Repository } from 'typeorm';
 import { UpdateProfileDTO } from '../dto/profile.dto';
 import { UsersProfile } from '../entities/users_profile.entity';
 import { IBasicProfile, IUpdateProfile } from '../interfaces';
 
 @Service()
-export class ProfileRepository extends BaseRepository {
-  constructor() {
-    super(UsersProfile);
-  }
-
+@EntityRepository(UsersProfile)
+export class ProfileRepository extends Repository<UsersProfile> {
   async createProfile(data: IBasicProfile) {
-    return this.getRepo().save(data);
+    return this.save(data);
   }
 
   async updateProfile(userId: string, data: UpdateProfileDTO) {
-    return this.getRepo().update({ userId }, data);
+    return this.update({ userId }, data);
   }
 
   async getProfile(userId: string) {
-    return this.getRepo().findOne({ userId });
+    return this.findOne({ userId });
   }
 }

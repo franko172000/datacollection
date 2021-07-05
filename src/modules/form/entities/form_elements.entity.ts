@@ -1,6 +1,7 @@
 import { Exclude } from 'class-transformer';
 import {
   AfterLoad,
+  BaseEntity,
   BeforeInsert,
   Column,
   CreateDateColumn,
@@ -16,7 +17,7 @@ import { Forms } from './forms.entity';
 import { FormData } from './form_data.entity';
 
 @Entity({ name: 'form_elements' })
-export class FormElements {
+export class FormElements extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
 

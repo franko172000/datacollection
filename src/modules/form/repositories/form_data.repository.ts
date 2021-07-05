@@ -1,10 +1,7 @@
 import { Service } from 'typedi';
-import { BaseRepository } from '../../../repository/base.repository';
+import { EntityRepository, Repository } from 'typeorm';
 import { FormData } from '../entities/form_data.entity';
 
 @Service()
-export class FormDataRepository extends BaseRepository {
-  constructor() {
-    super(FormData);
-  }
-}
+@EntityRepository(FormData)
+export class FormDataRepository extends Repository<FormData> {}

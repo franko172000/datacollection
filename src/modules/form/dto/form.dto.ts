@@ -1,4 +1,15 @@
-import { ArrayNotEmpty, IsArray, IsBoolean, IsEnum, IsNotEmpty, IsNumber, IsObject, IsOptional, IsString, MinLength, ValidateIf } from 'class-validator';
+import {
+  ArrayNotEmpty,
+  IsArray,
+  IsBoolean,
+  IsEnum,
+  IsNotEmpty,
+  IsNumber,
+  IsObject,
+  IsOptional,
+  IsString,
+  ValidateIf,
+} from 'class-validator';
 import { inputTypes } from '../enum';
 
 export const getStringTypes = (): string => {
