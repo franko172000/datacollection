@@ -1,7 +1,7 @@
-import { createConnection, useContainer } from 'typeorm';
-import config from '../config';
+import { createConnection } from 'typeorm';
+import { Container } from 'typeorm-typedi-extensions';
+import { useContainer } from 'typeorm';
 import path from 'path';
-import Container from 'typedi';
 
 //set root directory
 const rootDir = path.join(__dirname, 'src');
@@ -13,6 +13,6 @@ export default async () => {
   /**
    * Use TypeDI as TypeORM dependency injector
    */
-  //useContainer(Container);
+  useContainer(Container);
   return createConnection();
 };

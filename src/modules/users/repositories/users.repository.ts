@@ -1,21 +1,24 @@
 import { Service } from 'typedi';
-import { BaseRepository } from '../../../repository/base.repository';
+import { EntityRepository, Repository } from 'typeorm';
 import { Users } from '../entities/users.entity';
+import { UsersProfile } from '../entities/users_profile.entity';
 import { accountStatus } from '../enum';
 import { IUsers } from '../interfaces';
 
 @Service()
-export class UsersRepository extends BaseRepository {
-  constructor() {
-    super(Users);
-  }
+@EntityRepository(Users)
+export class UsersRepository extends Repository<Users> {
+  // constructor() {
+  //   super(Users);
+  // }
   /**
    * Create new user
    * @param data user data
    * @returns object
    */
-  async createUser(data: IUsers): Promise<any> {
-    return this.getRepo().save(data);
+  async createUser(data: IUsers) {
+    /**this will trigger the @BeforeInsert() event on the entity class */
+    return this.save(this.create(data));
   }
 
   /**
@@ -23,8 +26,8 @@ export class UsersRepository extends BaseRepository {
    * @param email user email
    * @returns object
    */
-  async getUserByEmail(email: string): Promise<any> {
-    return this.getRepo().findOne(
+  async getUserByEmail(email: string) {
+    return this.findOne(
       { email },
       {
         relations: ['profile'],
@@ -38,7 +41,7 @@ export class UsersRepository extends BaseRepository {
    * @returns object
    */
   async getUserById(userid: string): Promise<any> {
-    return this.getRepo().findOne(
+    return this.findOne(
       { id: userid },
       {
         relations: ['profile'],
@@ -53,7 +56,7 @@ export class UsersRepository extends BaseRepository {
    * @returns object
    */
   async updateAccount(data: any, userId: string): Promise<any> {
-    return this.getRepo().update({ id: userId }, data);
+    return this.update({ id: userId }, data);
   }
 
   /**
@@ -62,10 +65,10 @@ export class UsersRepository extends BaseRepository {
    * @returns object
    */
   async activateAccount(userId: string): Promise<any> {
-    return this.getRepo().update(
+    return this.update(
       { id: userId },
       {
-        isActivated: 1,
+        isActivated: true,
         accountStatus: accountStatus.ac,
       },
     );

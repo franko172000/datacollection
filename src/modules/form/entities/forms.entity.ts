@@ -1,4 +1,5 @@
 import {
+  BaseEntity,
   Column,
   CreateDateColumn,
   Entity,
@@ -13,7 +14,7 @@ import { FormData } from './form_data.entity';
 import { FormElements } from './form_elements.entity';
 
 @Entity({ name: 'forms' })
-export class Forms {
+export class Forms extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
 

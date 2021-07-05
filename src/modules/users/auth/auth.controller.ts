@@ -11,8 +11,8 @@ import {
   forgotPasswordDTO,
 } from '../dto/auth.dto';
 import { AuthGuard } from '../middleware/auth.middleware';
+import { OTPGuard } from '../middleware/otp.middleware';
 import AuthService from './auth.service';
-
 @Controller('auth/')
 @Service()
 export default class AuthController {
@@ -48,9 +48,9 @@ export default class AuthController {
    * @returns json
    */
   @Post('validate-otp')
-  @UseBefore(AuthGuard)
-  async validateOTP(@Body() body: OtpDTO, @Req() req: any) {
-    return await this.authService.validateOTP(body, getUserIdFromRequest(req));
+  @UseBefore(AuthGuard, OTPGuard)
+  async validateOTP() {
+    return await this.authService.validateOTP();
   }
 
   /**
@@ -60,7 +60,7 @@ export default class AuthController {
    * @returns
    */
   @Patch('reset-password')
-  @UseBefore(AuthGuard)
+  @UseBefore(AuthGuard, OTPGuard)
   async resetPassword(@Body() body: ResetPasswordDTO, @Req() req: any) {
     return await this.authService.resetPassword(body, getUserIdFromRequest(req));
   }
@@ -83,9 +83,9 @@ export default class AuthController {
    * @returns JSON
    */
   @Patch('confirm-email')
-  @UseBefore(AuthGuard)
+  @UseBefore(AuthGuard, OTPGuard)
   async activateAccount(@Body() body: OtpDTO, @Req() req: any) {
-    return await this.authService.confirmEmail(body, getUserIdFromRequest(req));
+    return await this.authService.confirmEmail(getUserIdFromRequest(req));
   }
 
   /**

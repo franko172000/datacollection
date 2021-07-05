@@ -15,5 +15,5 @@ export class UpdateProfileDTO {
 
   @IsNumber()
   @IsOptional()
-  industry: number;
+  industry: string;
 }

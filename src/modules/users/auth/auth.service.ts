@@ -1,7 +1,7 @@
 import { NotFoundError, UnauthorizedError } from 'routing-controllers';
 import { Service } from 'typedi';
 import { BaseService } from '../../../services/base.service';
-import { UserRegisterDTO, UserLoginDTO, OtpDTO, ResetPasswordDTO } from '../dto/auth.dto';
+import { UserRegisterDTO, UserLoginDTO, ResetPasswordDTO } from '../dto/auth.dto';
 import { UsersRepository } from '../repositories/users.repository';
 import ProfileUtilService from '../profile/profile_util.service';
 import * as bcrypt from 'bcrypt';
@@ -9,11 +9,12 @@ import MessageBrooker from '../../../brooker/message_brooker';
 import config from '../../../config';
 import { sign } from 'jsonwebtoken';
 import { OTPService } from '../otp/otp.service';
+import { InjectRepository } from 'typeorm-typedi-extensions';
 
 @Service()
 export default class AuthService extends BaseService {
   constructor(
-    private readonly userRepo: UsersRepository,
+    @InjectRepository(UsersRepository) private readonly userRepo: UsersRepository,
     private readonly profileUtil: ProfileUtilService,
     private readonly msgBrooker: MessageBrooker,
     private readonly otpService: OTPService,
@@ -58,10 +59,7 @@ export default class AuthService extends BaseService {
    */
   async registerUser(user: UserRegisterDTO) {
     //destruct user object
-    const { firstName, lastName, email, companyName } = user;
-    let { password } = user;
-    //encrypt password
-    password = bcrypt.hashSync(password, 10);
+    const { firstName, lastName, email, companyName, password } = user;
     //create user record
     const userObj = await this.userRepo.createUser({ email, password });
 
@@ -102,7 +100,7 @@ export default class AuthService extends BaseService {
 
     const token = this.generateToken(user.id, email);
 
-    return this.okResponse('Token', { token });
+    return this.okResponse('Generated Token', { token });
   }
 
   /**
@@ -110,13 +108,12 @@ export default class AuthService extends BaseService {
    * @param data request body
    * @returns JSON
    */
-  async validateOTP(data: OtpDTO, userId: string) {
-    //1. check geneeated tokenk
-    const { code } = data;
+  async validateOTP() {
+    // //1. check geneeated tokenk
+    // const { code } = data;
 
-    //check if otp is valid
-    await this.checkOTP(userId, code);
-
+    // //check if otp is valid
+    // await this.checkOTP(userId, code);
     return this.okResponse('OTP validated');
   }
 
@@ -124,15 +121,9 @@ export default class AuthService extends BaseService {
    * Validates OPT and activates user account
    * @param data request body
    */
-  async confirmEmail(data: OtpDTO, userId: string) {
-    const { code } = data;
-
-    //check if otp is valid
-    await this.checkOTP(userId, code);
-
+  async confirmEmail(userId: string) {
     //get user info
     const userData = await this.userRepo.getUserById(userId);
-
 
     if (!userData) {
       throw new NotFoundError('User not found');
@@ -192,14 +183,12 @@ export default class AuthService extends BaseService {
    * @returns JSON
    */
   async resetPassword(data: ResetPasswordDTO, userId: string) {
-    //validate OTP
-    await this.checkOTP(userId, data.code);
     //encrypt password
     const password = bcrypt.hashSync(data.password, 10);
     //update account
-    const userData = await this.userRepo.updateAccount({ password }, userId);
+    const result = await this.userRepo.updateAccount({ password }, userId);
 
-    if (!userData) {
+    if (result.raw.affectedRows === 0) {
       throw new NotFoundError('User not found');
     }
 
@@ -216,9 +205,9 @@ export default class AuthService extends BaseService {
     //encrypt password
     password = bcrypt.hashSync(password, 10);
     //update account
-    const userData = await this.userRepo.updateAccount({ password }, userId);
+    const result = await this.userRepo.updateAccount({ password }, userId);
 
-    if (!userData) {
+    if (result.raw.affectedRows === 0) {
       throw new NotFoundError('User not found');
     }
 
@@ -239,17 +228,5 @@ export default class AuthService extends BaseService {
       config.jwtSecret,
       { expiresIn: duration ?? '1h' },
     );
-  }
-
-  /**
-   * validate OTP
-   * @param userId
-   * @param code
-   */
-  private async checkOTP(userId: string, code: number) {
-    const otp = await this.otpService.validateOTP(userId, code);
-    if (!otp) {
-      throw new UnauthorizedError('OTP not found');
-    }
   }
 }

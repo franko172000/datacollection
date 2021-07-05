@@ -1,21 +1,18 @@
 import { Service } from 'typedi';
-import { BaseRepository } from '../../../repository/base.repository';
+import { EntityRepository, Repository } from 'typeorm';
 import { OTP } from '../entities/otp.entity';
 import { Iotp } from '../interfaces';
 
 @Service()
-export class OTPRepository extends BaseRepository {
-  constructor() {
-    super(OTP);
-  }
-
+@EntityRepository(OTP)
+export class OTPRepository extends Repository<OTP> {
   /**
    * Create OTP
    * @param Iotp data OTP interface
    * @returns promise
    */
   async createOTP(data: Iotp) {
-    return this.getRepo().save(data);
+    return this.save(data);
   }
 
   /**
@@ -25,7 +22,7 @@ export class OTPRepository extends BaseRepository {
    * @returns promise
    */
   async getOTP(code: number, userId: string) {
-    return this.getRepo().findOne({ code, user_id: userId });
+    return this.findOne({ where: { code, userId } });
   }
 
   /**
@@ -33,6 +30,6 @@ export class OTPRepository extends BaseRepository {
    * @param id number
    */
   async deleteOTP(id: number) {
-    this.getRepo().delete({ id });
+    return this.delete({ id });
   }
 }

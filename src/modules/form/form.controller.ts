@@ -31,18 +31,18 @@ export class FormController extends BaseController {
   }
 
   @Get('main/:id')
-  async getFormById(@Param('id') id: FormIdDTO) {
-    return this.formService.getSingleForm(id);
+  async getFormById(@Param('id') param: FormIdDTO) {
+    return this.formService.getSingleForm(param.id);
   }
 
   @Put('main/:id')
-  async updateForm(@Body() body: FormDTO, @Param('id') id: FormIdDTO, @Req() req: any) {
-    return this.formService.updateForm(id, body, this.getUserIdFromRequest(req));
+  async updateForm(@Body() body: FormDTO, @Param('id') param: FormIdDTO, @Req() req: any) {
+    return this.formService.updateForm(param.id, body, this.getUserIdFromRequest(req));
   }
 
   @Delete('main/:id')
-  async deleteForm(@Param('id') id: FormIdDTO, @Req() req: any) {
-    return this.formService.deleteForm(id, this.getUserIdFromRequest(req));
+  async deleteForm(@Param('id') param: FormIdDTO, @Req() req: any) {
+    return this.formService.deleteForm(param.id, this.getUserIdFromRequest(req));
   }
 
   /** Form elements routes */
@@ -52,22 +52,22 @@ export class FormController extends BaseController {
   }
 
   @Put('element/:id')
-  async updateElement(@Param('id') id: FormIdDTO, @Body() body: FormElementsDTO) {
-    return this.formElementsService.updateElement(id, body);
+  async updateElement(@Param('id') param: FormIdDTO, @Body() body: FormElementsDTO) {
+    return this.formElementsService.updateElement(param.id, body);
   }
 
   @Delete('element/:id')
-  async deleteElement(@Param('id') id: FormIdDTO) {
-    return this.formElementsService.deleteElement(id);
+  async deleteElement(@Param('id') param: FormIdDTO) {
+    return this.formElementsService.deleteElement(param.id);
   }
 
   @Get('element/:id')
-  async getElement(@Param('id') id: FormIdDTO) {
-    return this.formElementsService.getElementById(id);
+  async getElement(@Param('id') param: FormIdDTO) {
+    return this.formElementsService.getElementById(param.id);
   }
 
   @Get('element/all/:formId')
-  async getElements(@Param('formId') id: FormIdDTO) {
-    return this.formElementsService.getElements(id);
+  async getElements(@Param('formId') param: FormIdDTO) {
+    return this.formElementsService.getElements(param.id);
   }
 }

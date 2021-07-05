@@ -7,13 +7,17 @@ import {
   UpdateDateColumn,
   OneToOne,
   OneToMany,
+  BeforeInsert,
+  BeforeUpdate,
+  BaseEntity,
 } from 'typeorm';
 import { Forms } from '../../form/entities/forms.entity';
 import { accountStatus } from '../enum';
 import { UsersProfile } from './users_profile.entity';
+import * as bcrypt from 'bcrypt';
 
 @Entity()
-export class Users {
+export class Users extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
@@ -39,9 +43,20 @@ export class Users {
   @UpdateDateColumn({ name: 'updated_at', select: false })
   updatedAt: Date;
 
+  @BeforeInsert()
+  handleBeforeInsert() {
+    this.password = bcrypt.hashSync(this.password, 10);
+  }
+
+  @BeforeUpdate()
+  handleBeforeUpdate() {
+    console.log(this.password);
+    this.password = this.password !== '' ? bcrypt.hashSync(this.password, 10) : this.password;
+  }
+
   @OneToOne(type => UsersProfile, profile => profile.user, {
     eager: true,
-    cascade: false,
+    cascade: ['insert'],
   })
   profile: UsersProfile;
 

@@ -5,7 +5,7 @@
   "scripts": {
     "start": "SET NODE_ENV=production && nodemon ./src/app.ts",
     "test2": "SET NODE_ENV=test && npm run migration && jest",
-    "test": "SET NODE_ENV=test && ts-node  --transpile-only ./src/test/setup/migration.ts && jest --detectOpenHandles --forceExit",
+    "test": "SET NODE_ENV=test && ts-node  --transpile-only ./src/test/setup/migration.ts && jest --forceExit",
     "dev": "SET NODE_ENV=development && nodemon ./src/app.ts",
     "build": "cross-env NODE_ENV=production tsc",
     "lint": "npm run lint:js ",
@@ -54,7 +54,7 @@
     "tsconfig-paths": "^3.9.0",
     "typedi": "^0.10.0",
     "typeorm": "^0.2.31",
-    "typeorm-typedi-extensions": "^0.4.0",
+    "typeorm-typedi-extensions": "^0.4.1",
     "winston": "^3.3.3"
   },
   "devDependencies": {

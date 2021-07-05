@@ -17,7 +17,6 @@ export interface IUpdateProfile {
   industry: string;
 }
 export interface Iotp {
-  user_id: string;
+  userId: string;
   code: number;
 }
-

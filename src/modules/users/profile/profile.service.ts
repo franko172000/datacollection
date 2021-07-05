@@ -1,13 +1,13 @@
 import { NotFoundError } from 'routing-controllers';
 import { Service } from 'typedi';
+import { InjectRepository } from 'typeorm-typedi-extensions';
 import { BaseService } from '../../../services/base.service';
 import { UpdateProfileDTO } from '../dto/profile.dto';
-import { IUpdateProfile } from '../interfaces';
 import { ProfileRepository } from '../repositories/profile.repository';
 
 @Service()
 export default class ProfileService extends BaseService {
-  constructor(private readonly profileRepo: ProfileRepository) {
+  constructor(@InjectRepository(ProfileRepository) private readonly profileRepo: ProfileRepository) {
     super();
   }
 

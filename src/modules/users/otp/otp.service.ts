@@ -1,21 +1,22 @@
 import { Service } from 'typedi';
+import { InjectRepository } from 'typeorm-typedi-extensions';
 import { OTPRepository } from '../repositories/otp.repository';
 
 @Service()
 export class OTPService {
-  constructor(private readonly otpRepo: OTPRepository) {}
+  constructor(@InjectRepository(OTPRepository) private readonly otpRepo: OTPRepository) {}
 
   /**
    * Method to generate One-time-password
    * @param userId string
    * @returns number
    */
-  async generateOTP(userId: string) {
+  async generateOTP(userId: string): Promise<number> {
     //generate 6 random numbers
     const code = Math.floor(100000 + Math.random() * 900000);
     //add number to database
     await this.otpRepo.createOTP({
-      user_id: userId,
+      userId,
       code,
     });
     return code;
@@ -31,8 +32,9 @@ export class OTPService {
   async validateOTP(userId: string, code: number) {
     const otp = await this.otpRepo.getOTP(code, userId);
     if (otp) {
-      //this.otpRepo.deleteOTP(otp.id);
+      await this.otpRepo.deleteOTP(otp.id);
       return true;
     }
+    return false;
   }
 }
