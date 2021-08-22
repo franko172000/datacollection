@@ -1,7 +1,7 @@
 import dotenv from 'dotenv';
 import msgChannels from './brooker_channels';
 // Set the NODE_ENV to 'development' by default
-const environment = process.env.NODE_ENV;
+const environment = process.env.NODE_ENV || '';
 const envFound = dotenv.config();
 
 //default development db config

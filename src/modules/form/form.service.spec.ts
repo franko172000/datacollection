@@ -14,7 +14,7 @@ describe('Test all form services', () => {
   });
 
   afterAll(done => {
-    connection.close();
+    //connection.close();
     done();
   });
 

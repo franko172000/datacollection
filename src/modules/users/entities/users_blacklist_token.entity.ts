@@ -1,7 +1,7 @@
 import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, BaseEntity } from 'typeorm';
 
 @Entity({ name: 'users_blacklisted_token' })
-export class UsersBlacklistToken extends BaseEntity {
+export class UsersBlacklistToken {
   @PrimaryGeneratedColumn()
   id: number;
 

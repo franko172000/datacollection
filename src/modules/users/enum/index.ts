@@ -5,3 +5,8 @@ export enum accountStatus {
   ac = 'active',
   dl = 'deleted',
 }
+
+export enum userRoles {
+  us = 'user',
+  ag = 'agent',
+}

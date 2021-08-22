@@ -7,9 +7,9 @@ import ProfileUtilService from '../profile/profile_util.service';
 import * as bcrypt from 'bcrypt';
 import MessageBrooker from '../../../brooker/message_brooker';
 import config from '../../../config';
-import { sign } from 'jsonwebtoken';
 import { OTPService } from '../otp/otp.service';
 import { InjectRepository } from 'typeorm-typedi-extensions';
+import AuthGuardSerivce from './auth_guard.service';
 
 @Service()
 export default class AuthService extends BaseService {
@@ -18,6 +18,7 @@ export default class AuthService extends BaseService {
     private readonly profileUtil: ProfileUtilService,
     private readonly msgBrooker: MessageBrooker,
     private readonly otpService: OTPService,
+    private readonly authGuard: AuthGuardSerivce,
   ) {
     super();
   }
@@ -47,7 +48,7 @@ export default class AuthService extends BaseService {
     }
 
     //sign JWT token
-    const token = this.generateToken(user.id, user.email);
+    const token = this.authGuard.generateToken(user.id, user.email);
 
     return this.okResponse('Login valid', { token });
   }
@@ -76,7 +77,7 @@ export default class AuthService extends BaseService {
     const otp = await this.otpService.generateOTP(userId);
 
     //sign JWT token
-    const token = this.generateToken(userId, email);
+    const token = this.authGuard.generateToken(userId, email);
 
     //send confirmation email
     this.msgBrooker.sendMessage(
@@ -98,7 +99,7 @@ export default class AuthService extends BaseService {
       throw new NotFoundError('User not found');
     }
 
-    const token = this.generateToken(user.id, email);
+    const token = this.authGuard.generateToken(user.id, email);
 
     return this.okResponse('Generated Token', { token });
   }
@@ -161,7 +162,7 @@ export default class AuthService extends BaseService {
     const otp = await this.otpService.generateOTP(data.id);
 
     //generate token
-    const token = this.generateToken(data.id, data.email);
+    const token = this.authGuard.generateToken(data.id, data.email);
     //send pasword reset email
     this.msgBrooker.sendMessage(
       config.brookerChannels.email.auth.passwordReset,
@@ -212,21 +213,5 @@ export default class AuthService extends BaseService {
     }
 
     return this.okResponse('Password updated');
-  }
-
-  /**
-   * Generate JWT token
-   * @param userId user id
-   * @param email user email
-   * @returns string
-   */
-  private generateToken(userId: string, email: string, duration?: string) {
-    return sign(
-      {
-        data: { email, id: userId },
-      },
-      config.jwtSecret,
-      { expiresIn: duration ?? '1h' },
-    );
   }
 }

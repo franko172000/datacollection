@@ -8,6 +8,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { AgentsEntity } from '../../agents/entities/agents.entity';
 import { Forms } from './forms.entity';
 import { FormElements } from './form_elements.entity';
 
@@ -40,6 +41,10 @@ export class FormData extends BaseEntity {
   })
   @JoinColumn({ name: 'element_id', referencedColumnName: 'id' })
   elements: FormElements;
+
+  @ManyToOne(type => AgentsEntity, agent => agent.form_data)
+  @JoinColumn({ name: 'agent_id', referencedColumnName: 'id' })
+  agent: AgentsEntity;
 
   @ManyToOne(type => Forms, formData => formData.elements, {
     onDelete: 'CASCADE',

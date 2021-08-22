@@ -11,7 +11,7 @@ export class BlacklistTokenRepository extends Repository<UsersBlacklistToken> {
    * @param expireAt
    * @returns
    */
-  async blacklistToken(token: string, expireAt: string): Promise<unknown> {
+  async blacklistToken(token: string, expireAt: string){
     return this.save({
       token,
       expireAt,
@@ -23,7 +23,7 @@ export class BlacklistTokenRepository extends Repository<UsersBlacklistToken> {
    * @param token
    * @returns Promise<number>
    */
-  async checkBlacklist(token: string): Promise<number> {
+  async checkBlacklist(token: string) {
     return this.count({ token });
   }
 }

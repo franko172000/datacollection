@@ -5,22 +5,36 @@ import {
   PrimaryGeneratedColumn,
   CreateDateColumn,
   UpdateDateColumn,
-  OneToOne,
-  OneToMany,
   BeforeInsert,
   BeforeUpdate,
   BaseEntity,
+  ManyToOne,
+  JoinColumn,
+  OneToMany,
 } from 'typeorm';
-import { Forms } from '../../form/entities/forms.entity';
-import { accountStatus } from '../enum';
-import { UsersProfile } from './users_profile.entity';
 import * as bcrypt from 'bcrypt';
-import { AgentsEntity } from '../../agents/entities/agents.entity';
+import { Users } from '../../users/entities/users.entity';
+import { FormData } from '../../form/entities/form_data.entity';
 
-@Entity()
-export class Users extends BaseEntity {
+@Entity({ name: 'agents' })
+export class AgentsEntity extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
+
+  @Column({ name: 'user_id', nullable: false, type: 'uuid' })
+  userId: string;
+
+  @Column({ name: 'first_name', nullable: false })
+  firstName: string;
+
+  @Column({ name: 'last_name', nullable: false })
+  lastName: string;
+
+  @Column({ nullable: false })
+  phone: string;
+
+  @Column({ nullable: true })
+  photo: string;
 
   @Column({ unique: true, nullable: false })
   email: string;
@@ -31,9 +45,6 @@ export class Users extends BaseEntity {
 
   @Column({ name: 'is_activated', nullable: false, default: 0 })
   isActivated: boolean;
-
-  @Column({ name: 'account_status', type: 'enum', enum: accountStatus, default: accountStatus.pd })
-  accountStatus: string;
 
   @Column({ name: 'last_logged_in', nullable: true })
   lastLoggedIn: Date;
@@ -54,17 +65,13 @@ export class Users extends BaseEntity {
     this.password = this.password !== '' ? bcrypt.hashSync(this.password, 10) : this.password;
   }
 
-  @OneToMany(type => AgentsEntity, agents => agents.user, {
-    eager: false,
-  })
-  agents: AgentsEntity;
+  @OneToMany(type => FormData, form_data => form_data.agent)
+  form_data: FormData;
 
-  @OneToOne(type => UsersProfile, profile => profile.user, {
+  @ManyToOne(type => Users, user => user.agents, {
     eager: true,
-    cascade: ['insert'],
+    onDelete: 'CASCADE',
   })
-  profile: UsersProfile;
-
-  @OneToMany(type => Forms, forms => forms.user)
-  forms: Forms;
+  @JoinColumn({ name: 'user_id', referencedColumnName: 'id' })
+  user: Users;
 }

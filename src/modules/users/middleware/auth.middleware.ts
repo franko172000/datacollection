@@ -12,9 +12,8 @@ export class AuthGuard implements ExpressMiddlewareInterface {
       : request.body.token;
 
     const decoded = await this.authGuardService.validateToken(token);
-
     //update the request object
-    request.params['userId'] = decoded.data.id;
+    request.params['userId'] = decoded['data'].id;
 
     next();
   }

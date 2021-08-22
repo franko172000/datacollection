@@ -11,7 +11,7 @@ const app = express();
 //  */
 // useContainer(Container);
 
-const startServer = async () => {
+export const startServer = async () => {
   //load initial dependencies
   await loader(app);
 
